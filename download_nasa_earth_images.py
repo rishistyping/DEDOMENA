@@ -1,12 +1,26 @@
 import requests
 import shutil
-import os   
+import os
+ 
+"""
+This function can download an entire history of any NASA image dataset that follow the GIBS RESTful API pattern of calls
+
+Sample call: https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2012-07-09/250m/6/13/36.jpg
+
+Pattern: https://gibs.earthdata.nasa.gov/wmts/epsg{EPSG:Code}/best/{ProductName}/default/{Time}/{TileMatrixSet}/{ZoomLevel}/{TileRow}/{TileCol}.png
+
+"""
 
 def download_MODIS_image(num_images, year, month, day, max_day, max_month, end_date):
     
-    # input params
-    # param 1: number of images to download (for this URL, don't go over 80)
-    # param 2: date of image; e.g. date = '2012-07-09'
+    # input parameters
+    # num_images: number of images to download (for this URL, don't go over 80)
+    # year: year when image was taken; e.g. 2019
+    # month: month when image was taken; e.g. 7
+    # day: day when image was taken; e.g. 12
+    # max_day: day of each month on which you want to stop and move on to the next month; e.g. 30
+    # max_month: month of each year on which you want to stop and move on to the next year; e.g. 12
+    # end_date: a data (string) on which you want to break the loop; e.g. ''2019-10-20
     
     if month < 10 and day < 10:
         date = str(year) + '-0' + str(month) + '-0' + str(day)
@@ -28,7 +42,7 @@ def download_MODIS_image(num_images, year, month, day, max_day, max_month, end_d
             for i in range(num_images):
                 
                 if date == end_date:
-                    print 'end date ', end_date, ' reached'
+                    print('end date','end_date', ' reached')
                     break            
                 image_id = i
                 #image_num = str(img_counter)
@@ -57,9 +71,9 @@ def download_MODIS_image(num_images, year, month, day, max_day, max_month, end_d
                 
                 filesize = os.path.getsize(full_filepath)
                 if filesize > 428:
-                    print 'image #', image_num, 'downloaded'
+                    print('image #', 'image_num', 'downloaded')
                 else:
-                    print 'image #', image_num, 'is a zero sized file --> invalid image'
+                    print('image #','image_num', 'is a zero sized file --> invalid image')
                     
                 image_num += 1
             
