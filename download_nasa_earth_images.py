@@ -20,7 +20,7 @@ def download_MODIS_image(num_images, year, month, day, max_day, max_month, end_d
     # day: day when image was taken; e.g. 12
     # max_day: day of each month on which you want to stop and move on to the next month; e.g. 30
     # max_month: month of each year on which you want to stop and move on to the next year; e.g. 12
-    # end_date: a data (string) on which you want to break the loop; e.g. ''2019-10-20
+    # end_date: a data (string) on which you want to break the loop; e.g. '2019-10-20'
     
     if month < 10 and day < 10:
         date = str(year) + '-0' + str(month) + '-0' + str(day)
