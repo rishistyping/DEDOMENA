@@ -85,3 +85,6 @@ The idea of Variational Autoencoder is actually less similar to all the autoenco
 
 For example, a model trained on photos of human faces might capture the gentle, skin color, hair color, hair length, emotion, whether wearing a pair of glasses and many other relatively independent factors in separate dimensions. Such a disentangled representation is very beneficial to facial image generation.
 
+
+# Machine Learning pipeline
+![Microsoft Azure ML pipeline](https://github.com/EXYNOS-999/NASA_LOST_DATA/blob/master/ML%20pipeline.png)
