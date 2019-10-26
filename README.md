@@ -87,4 +87,7 @@ For example, a model trained on photos of human faces might capture the gentle, 
 
 
 # Machine Learning pipeline
+
+![Microsoft Azure ML pipeline - blocks](https://github.com/EXYNOS-999/NASA_LOST_DATA/blob/master/ML%20pipeline%202.png)
+
 ![Microsoft Azure ML pipeline](https://github.com/EXYNOS-999/NASA_LOST_DATA/blob/master/ML%20pipeline.png)
