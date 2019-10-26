@@ -1,0 +1,58 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+- group: ServicePrinciple
+
+trigger:
+- master
+- releases/*
+- develop
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.6'
+    architecture: 'x64'   
+
+- task: Bash@3
+  displayName: 'Install Project Requirements'
+  inputs:
+    targetType: filePath
+    filePath: 'environment_setup/install_requirements.sh'
+    workingDirectory: 'environment_setup'
+
+- script: | 
+   az login --service-principal -u $(spidentity) -p $(spsecret) --tenant $(sptenant)
+   
+  displayName: 'Login to Azure'
+  
+- script: 'pytest tests/unit/inputdata_test.py'
+  displayName: 'Input Data Quality Check'
+  
+- script: 'python azureml_service/00-WorkSpace.py'
+  displayName: 'Get Azure Machine Learning Service Workspace'
+
+- script: 'python azureml_service/10-TrainOnLocal.py'
+  displayName: 'Training on Local'
+
+- script: 'python azureml_service/20-RegisterModel.py'
+  displayName: 'Register ML model'
+
+- script: 'python azureml_service/30-CreateScoringImage.py'
+  displayName: 'Create Docker Image'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '**'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: ml-test-devops'
+  inputs:
+    ArtifactName: 'ml-test-devops'
+    publishLocation: 'container'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    TargetPath: '$(Build.ArtifactStagingDirectory)'

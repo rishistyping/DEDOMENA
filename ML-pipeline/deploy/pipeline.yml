@@ -1,0 +1,42 @@
+pool:
+  name: Azure Pipelines
+#Your build pipeline references an undefined variable named ‘Parameters.url’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘Parameters.token’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘Parameters.notebookPath’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘Parameters.existingClusterId’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.6'
+  inputs:
+    versionSpec: 3.6
+
+- task: Bash@3
+  displayName: 'Install Requirements - bash'
+  inputs:
+    targetType: filePath
+    filePath: './environment_setup/install_requirements.sh'
+
+- task: AzureCLI@1
+  displayName: 'Setup Machine Learning Workspace'
+  inputs:
+    azureSubscription: 'nasa-spaceconnection'
+    scriptLocation: inlineScript
+    inlineScript: 'python azureml_service/00-WorkSpace.py'
+
+- task: riserrad.azdo-databricks.azdo-databricks-configuredatabricks.configuredatabricks@0
+  displayName: 'Configure- Databricks'
+  inputs:
+    url: '$(Parameters.url)'
+    token: '$(Parameters.token)'
+
+- task: riserrad.azdo-databricks.azdo-databricks-executenotebook.executenotebook@0
+  displayName: Execute
+  inputs:
+    notebookPath: '$(Parameters.notebookPath)'
+    existingClusterId: '$(Parameters.existingClusterId)'
+
+- task: riserrad.azdo-databricks.azdo-databricks-deploynotebooks.deploynotebooks@0
+  displayName: Deploy
+  inputs:
+    notebooksFolderPath: deploy
